@@ -21,6 +21,7 @@ class Car:
     status = None
     fuel_level = None
 
+    # Constructor
     def __init__(self, brand, model, color, year, performance, fuel_type):
         self.brand = brand
         self.model = model
@@ -31,6 +32,13 @@ class Car:
         self.mileage = 0
         self.status = _CarStatus.STOPPED
         self.fuel_level = 100
+        print(f"\n"
+              f"Congratulations to your new car. It's a {self.color.lower()} {self.brand} {self.model} from {self.year}.\n"
+              f"Enjoy your next trip with {self.performance} HP and {self.fuel_level}% fuel ({self.fuel_type})\n")
+
+    # Destructor
+    def __del__(self):
+        print(f"{self.brand} {self.model}: this car is destroyed")
 
     # Getter methods
     def get_brand(self):
@@ -61,15 +69,15 @@ class Car:
         return self.fuel_level
 
     # Setter methods
-    def set_status(self, status):
+    def __set_status(self, status):
         if _CarStatus.__contains__(status):
             self.status = status
             print(f"{self.brand} {self.model}: changed status to {self.status.name}")
         else:
             print("invalid status")
 
-    def set_fuel_level(self, level):
-        if level >= 0 and level <= 100:
+    def __set_fuel_level(self, level):
+        if 0 <= level <= 100:
             self.fuel_level = level
             print(f"{self.brand} {self.model}: current fuel level {level}")
         else:
@@ -103,19 +111,19 @@ class Car:
         else:
             if self.status == _CarStatus.STOPPED:
                 self.start_engine()
-            self.set_status(_CarStatus.DRIVING)
+            self.__set_status(_CarStatus.DRIVING)
             self.accelerate(100)
 
             print(f"{self.brand} {self.model}: Driving Home For Chrismas ...")
 
             for i in range(1, 10):
                 print(f"{self.brand} {self.model}: {int(distance - i * (distance / 10))} km left")
-                self.set_fuel_level(self.fuel_level - random.randint(2, 5))
+                self.__set_fuel_level(self.fuel_level - random.randint(2, 5))
                 time.sleep(0.75)
             print(f"{self.brand} {self.model}: 0 km left")
 
             self.brake(0)
-            self.set_status(_CarStatus.STARTED)
+            self.__set_status(_CarStatus.STARTED)
             self.stop_engine()
 
     def start_engine(self):
@@ -143,6 +151,5 @@ class Car:
 
 
 if __name__ == '__main__':
-    car1 = Car("BMW", "X5", "Blue", 2023, 300, "Benzin")
-    car1.set_status(_CarStatus.STARTED)
+    car1 = Car("BMW", "X5", "Blue", 2023, 300, "Gasoline")
     car1.drive(100)
