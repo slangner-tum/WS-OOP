@@ -1,30 +1,13 @@
 import random
 import time
-from enum import Enum
-
-
-class _CarStatus(Enum):
-    STOPPED = 0
-    STARTED = 1
-    DRIVING = 2
-
-
-class _Weather(Enum):
-    CLEAR = 0
-    RAIN = 1
-    SNOW = 2
-
-
-def example_function(param1, param2, param3=0):
-    # code section
-    result = param1 * param2 + param3  # calculating
-
-    # return section
-    return result
+from Status import _CarStatus, _Weather
+from Person import Person
+from Engine import Engine
+from Wheel import Wheel
 
 
 class Car:
-    # Declaration - not necessary
+    # declaration - not necessary
     brand = None
     model = None
     color = None
@@ -33,10 +16,13 @@ class Car:
     fuel_type = None
     mileage = None
     status = None
-    __fuel_level = None
+    fuel_level = None
+    driver = None
+    engine = None
+    wheels = None
 
     # Constructor
-    def __init__(self, brand, model, color, year, performance, fuel_type):
+    def __init__(self, brand, model, color, year, fuel_type, performance=0):
         self.brand = brand
         self.model = model
         self.color = color
@@ -45,12 +31,18 @@ class Car:
         self.fuel_type = fuel_type
         self.mileage = 0
         self.status = _CarStatus.STOPPED
-        self.__fuel_level = 100
+        self.fuel_level = 100
+        self.driver = Person()
+        if performance == 0:
+            self.engine = Engine(random.randint(100, 501))
+        else:
+            self.engine = Engine(performance)
+        self.wheels = [Wheel(19)] * 4
         print(f"\n"
               f"Congratulations to your new car. "
               f"It's a {self.color.lower()} {self.brand} {self.model} from {self.year}."
               f"\n"
-              f"Enjoy your next trip with {self.performance} HP and {self.__fuel_level}% fuel ({self.fuel_type})"
+              f"Enjoy your next trip with {self.performance} HP and {self.fuel_level}% fuel ({self.fuel_type})"
               f"\n")
 
     # Destructor
@@ -83,7 +75,7 @@ class Car:
         return self.status
 
     def get_fuel_level(self):
-        return self.__fuel_level
+        return self.fuel_level
 
     # Setter methods
     def __set_status(self, status):
@@ -95,7 +87,7 @@ class Car:
 
     def __set_fuel_level(self, level):
         if 0 <= level <= 100:
-            self.__fuel_level = level
+            self.fuel_level = level
             print(f"{self.brand} {self.model}: current fuel level {level}")
         else:
             print(f"{self.brand} {self.model}: invalid input")
@@ -114,9 +106,9 @@ class Car:
             print(f"{self.brand} {self.model}: braking to {speed} km/h")
 
     def refuel(self, level=100):
-        if level in range(0, 101) and level > self.__fuel_level:
-            print(f"{self.brand} {self.model} is refueling from {self.__fuel_level} to {level}")
-            self.__fuel_level = level
+        if level in range(0, 101) and level > self.fuel_level:
+            print(f"{self.brand} {self.model} is refueling from {self.fuel_level} to {level}")
+            self.fuel_level = level
         else:
             print(f"{self.brand} {self.model}: something went wrong during the refuelling")
 
@@ -135,7 +127,7 @@ class Car:
 
             for i in range(1, 10):
                 print(f"{self.brand} {self.model}: {int(distance - i * (distance / 10))} km left")
-                self.__set_fuel_level(self.__fuel_level - random.randint(2, 5))
+                self.__set_fuel_level(self.fuel_level - random.randint(2, 5))
                 time.sleep(0.75)
             print(f"{self.brand} {self.model}: 0 km left")
 
@@ -181,26 +173,9 @@ class Car:
             base_consumption *= 1.1
 
         # return section
-        return base_consumption
-
-
-def func_no_return(param1):
-    print(f"parameter = {param1}")
-    return
-
-
-def func_one_return(param1, param2):
-    return param1 + param2
-
-
-def func_multiple_return(param1, param2):
-    return param1 * 2, param2 * 3
+        return int(base_consumption)
 
 
 if __name__ == '__main__':
-    print(f"return value of {func_no_return.__name__}: {func_no_return(5)}")
-    print(f"return value of {func_one_return.__name__}: {func_one_return(5, 6)}")
-    print(f"return value of {func_multiple_return.__name__}: {func_multiple_return(2, 3)}")
-
-    # car1 = Car("BMW", "X5", "Blue", 2023, 300, "Gasoline")
-    # car1.drive(100)
+    car1 = Car("BMW", "X5", "Blue", 2023, "Gasoline", 300)
+    car1.drive(100)
